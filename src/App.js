@@ -71,7 +71,7 @@ export default function App() {
     const isError = validate();
     if (!isError) {
       fetch(
-        'https://q8t7df5dp7.execute-api.us-east-1.amazonaws.com/default/saveUserData',
+        'https://2750liadfi.execute-api.eu-north-1.amazonaws.com/default/whitepapers',
         {
           method: 'POST',
           body: JSON.stringify({
@@ -95,7 +95,7 @@ export default function App() {
 
   useEffect(() => {
     fetch(
-      `https://q8t7df5dp7.execute-api.us-east-1.amazonaws.com/default/saveUserData?id=${id}`,
+      `https://2750liadfi.execute-api.eu-north-1.amazonaws.com/default/whitepapers?id=${id}`,
       {
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
@@ -117,9 +117,26 @@ export default function App() {
         {!enableDownload ? (
           <p> wait...</p>
         ) : (
-          <a href="https://q8t7df5dp7.execute-api.us-east-1.amazonaws.com/default/saveUserData">
-            click to download
-          </a>
+          <>
+            <ul>
+              <li>
+                <a
+                  target="_blank"
+                  href="http://downloadwp.s3-website.eu-north-1.amazonaws.com/white-paper-template1.pdf"
+                >
+                  Download white paper on finance
+                </a>
+              </li>
+              <li>
+                <a
+                  target="_blank"
+                  href="http://downloadwp.s3-website.eu-north-1.amazonaws.com/white-paper-template2.pdf"
+                >
+                  Download white paper on AI
+                </a>
+              </li>
+            </ul>
+          </>
         )}
       </div>
     );
