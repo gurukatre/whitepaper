@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './style.css';
 
 export default function App() {
@@ -8,7 +8,10 @@ export default function App() {
   const [nameErr, setNameErr] = useState('');
   const [emailErr, setEmailErr] = useState('');
   const [jobTitleErr, setJobTitleErr] = useState('');
+  const [formSubmited, setFormSubmited] = useState(false);
+  const [enableDownload, setEnableDownload] = useState(false);
 
+  const [, id] = location.search.split('=');
   const validate = useCallback(() => {
     // Validate name
     let error = false;
@@ -68,7 +71,7 @@ export default function App() {
     const isError = validate();
     if (!isError) {
       fetch(
-        'https://bqaabme9m0.execute-api.us-east-1.amazonaws.com/default/saveUserData',
+        'https://q8t7df5dp7.execute-api.us-east-1.amazonaws.com/default/saveUserData',
         {
           method: 'POST',
           body: JSON.stringify({
@@ -77,24 +80,69 @@ export default function App() {
             jobTitle,
           }),
           headers: {
-            'x-api-key': 'Yccc6FpMCe7wf9wrJcRNY1WmbbthsyvD5yt144Hs',
             'Content-type': 'application/json; charset=UTF-8',
           },
         }
       )
         .then((response) => response.json())
-        .then((json) => console.log(json));
+        .then((data) => {
+          if (data.insertedId) {
+            setFormSubmited(true);
+          }
+        });
     }
   };
+
+  useEffect(() => {
+    fetch(
+      `https://q8t7df5dp7.execute-api.us-east-1.amazonaws.com/default/saveUserData?id=${id}`,
+      {
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setEnableDownload(true);
+        }
+      });
+  }, [id]);
+
+  if (id) {
+    return (
+      <div>
+        <h1>White Paper</h1>
+        {!enableDownload ? (
+          <p> wait...</p>
+        ) : (
+          <a href="https://q8t7df5dp7.execute-api.us-east-1.amazonaws.com/default/saveUserData">
+            click to download
+          </a>
+        )}
+      </div>
+    );
+  }
+
+  if (formSubmited) {
+    return (
+      <div>
+        <h1>White Paper</h1>
+        <p> Please verify email to download white paper.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>White Paper</h1>
       <p>Please enter below details to download white paper</p>
       <form onSubmit={handleSubmit} autocomplete="off">
         <div className="formInput">
-          <span className="label">
+          <div className="label">
             <label>Name</label> <span className="error">{nameErr}</span>
-          </span>
+          </div>
           <input
             type="Name"
             name="name"
@@ -104,9 +152,9 @@ export default function App() {
           />
         </div>
         <div className="formInput">
-          <span className="label">
+          <div className="label">
             <label>Email</label> <span className="error">{emailErr}</span>
-          </span>
+          </div>
           <input
             type="text"
             name="email"
@@ -116,10 +164,10 @@ export default function App() {
           />
         </div>
         <div className="formInput">
-          <span className="label">
+          <div className="label">
             <label>job title</label>{' '}
             <span className="error">{jobTitleErr}</span>
-          </span>
+          </div>
           <input
             type="text"
             name="jobTitle"
